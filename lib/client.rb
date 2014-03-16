@@ -35,8 +35,8 @@ class Client
   end
 
   def self.start
-    server = TCPSocket.open( "localhost", 3000 )
-    #server = TCPSocket.open( "http://54.83.36.99", 3000 )
+    #server = TCPSocket.open( "localhost", 3000 )
+    server = TCPSocket.open( "http://54.83.36.99", 3000 )
     Client.new( server )
   end
 
