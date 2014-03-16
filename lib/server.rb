@@ -55,11 +55,11 @@ class Server
       msg = client.gets.chomp
       category = check_for_commands username, client, msg, category
       @connections[:clients].each do |other_name, other_client|
-        Logger.log(@categories[category], "#{username}: #{msg}")
         if category == other_client[1] 
           other_client[0].puts "#{username.to_s}: #{msg}"
         end
         if other_name == username
+          Logger.log(@categories[category], "#{username}: #{msg}")
           other_client[1] = category
         end
       end
