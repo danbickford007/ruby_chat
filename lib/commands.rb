@@ -24,15 +24,17 @@ class Commands
   def category
     if @msg.match(/category:/)
       cat = @msg.split('category:')[1]
+      cat.strip!
       if @categories.include? cat
-        p 'FOUND...........'
         hash = Hash[@categories.map.with_index.to_a]
-        p @category = hash[cat]
+        @category = hash[cat]
+      elsif cat.match(/\d/) and @categories[cat.to_i]
+        p "HERE...."
+        @category = cat.to_i
       else
-        p 'ADDING..........'
         @categories << cat
         hash = Hash[@categories.map.with_index.to_a]
-        p @category = hash[cat]
+        @category = hash[cat]
       end
       @client.puts "Changing category..."
     end
@@ -41,7 +43,7 @@ class Commands
   def categories
     if @msg.match(/categories/)
       @categories.each_with_index do |cat, i|
-        @client.puts "#{i}. #{cat}"
+        @client.puts "#{i}. #{i == @category ? '*' : ''}#{cat}"
       end
     end
   end
@@ -52,6 +54,9 @@ class Commands
       @categories.each_with_index do |cat, i|
         @client.puts "#{i}. #{cat}"
       end
+      @client.puts "To select a category, issue command 'category:test' with 'test being the name of your category'"
+      @client.puts "To view all the categories and your current category defined by '*', issue command 'categories'"
+      @client.puts "To exit, issue command 'exit'"
     end
     category
   end

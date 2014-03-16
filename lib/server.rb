@@ -55,11 +55,8 @@ class Server
       msg = client.gets.chomp
       category = check_for_commands username, client, msg, category
       @connections[:clients].each do |other_name, other_client|
-        p "!!!!!!!!"
-        p category
-        p other_client[1]
         if category == other_client[1] 
-          other_client[0].puts "#{@categories[other_client[1]]}:: #{username.to_s}: #{msg}"
+          other_client[0].puts "#{username.to_s}: #{msg}"
         end
         if other_name == username
           other_client[1] = category

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby -w
 require "socket"
+require 'colorize'
 class Client
 
   @category = nil
@@ -18,13 +19,13 @@ class Client
     @response = Thread.new do
       loop {
         msg = @server.gets.chomp
-        puts "#{msg}"
+        puts "#{msg}".blue
       }
     end
   end
  
   def send
-    puts "Enter the username:"
+    puts "Enter the username:".red
     @request = Thread.new do
       loop {
         msg = $stdin.gets.chomp
