@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby -w
 require "socket"
+require_relative "commands"
+
+
 class Server
 
   def initialize( port, ip )
@@ -41,13 +44,10 @@ class Server
   end
 
   def check_for_commands username, client, msg, category
-    if msg.match(/exit/)
-      client.puts "Exiting..."
-    elsif msg.match(/category:/)
-      category = msg.split('category:')[1].to_i
-      client.puts "Changing category..."
-    end
-    category
+    commands = Commands.new msg, client, @categories, category
+    result = commands.check
+    @categories = result[:categories]
+    result[:category]
   end
  
   def listen_user_messages( username, client, category )
