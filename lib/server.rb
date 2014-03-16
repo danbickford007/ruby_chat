@@ -25,7 +25,6 @@ class Server
           end
         end
         puts "#{nick_name} #{client}"
-        @connections[:clients][nick_name] = client
         client.puts "Connection established, Thank you."
         client.puts "Please choose a category\n"
         @categories.each_with_index do |cat, i|
@@ -34,29 +33,36 @@ class Server
         p "CATGEGORY...."
         category = client.gets.chomp.to_i
         p category
-        @connections[:clients]['category'] = category
+        @connections[:clients][nick_name] = [client, category]
         client.puts "Starting chat..."
         listen_user_messages( nick_name, client, category)
       end
     }.join
   end
 
-  def check_for_commands client, msg
+  def check_for_commands username, client, msg, category
     if msg.match(/exit/)
       client.puts "Exiting..."
     elsif msg.match(/category:/)
+      category = msg.split('category:')[1].to_i
       client.puts "Changing category..."
     end
-
+    category
   end
  
   def listen_user_messages( username, client, category )
     loop {
       msg = client.gets.chomp
-      check_for_commands client, msg
+      category = check_for_commands username, client, msg, category
       @connections[:clients].each do |other_name, other_client|
-        unless other_name == username  
-          other_client.puts "#{@categories[category]}:: #{username.to_s}: #{msg}"
+        p "!!!!!!!!"
+        p category
+        p other_client[1]
+        if category == other_client[1] 
+          other_client[0].puts "#{@categories[other_client[1]]}:: #{username.to_s}: #{msg}"
+        end
+        if other_name == username
+          other_client[1] = category
         end
       end
     }
