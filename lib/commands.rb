@@ -25,7 +25,7 @@ class Commands
       p url = "#{url}/logs/#{hist}.txt"
       f = File.open(url, "r")
       f.each_line do |line|
-        @client.puts line
+        @client.puts "yellow:#{line}"
       end
       f.close
     elsif @msg.match(/history/)
@@ -43,7 +43,7 @@ class Commands
 
   def exit_now
     if @msg.match(/exit/)
-      @client.puts "Exiting..."
+      @client.puts "exit:"
     end
   end
 

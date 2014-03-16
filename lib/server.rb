@@ -64,7 +64,11 @@ class Server
       @connections[:clients].each do |other_name, other_client|
         if category == other_client[1] 
           p "sending to other....#{username}"
-          other_client[0].puts "#{username.to_s}: #{msg}"
+          if other_name == username
+            other_client[0].puts "red:#{username.to_s}: #{msg}"
+          else
+            other_client[0].puts "#{username.to_s}: #{msg}"
+          end
         end
         if other_name == username
           Logger.log(@categories[category], "#{username}: #{msg}")
