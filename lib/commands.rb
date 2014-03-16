@@ -12,7 +12,33 @@ class Commands
     category
     categories
     help
+    history
     {categories: @categories, category: @category}
+  end
+
+  def history
+    if @msg.match(/history:/)
+      @client.puts "Topic History:"
+      p hist = @msg.split(/history:/)[1]
+      url = `pwd`
+      url.gsub!(/\n/, '')
+      p url = "#{url}/logs/#{hist}.txt"
+      f = File.open(url, "r")
+      f.each_line do |line|
+        @client.puts line
+      end
+      f.close
+    elsif @msg.match(/history/)
+      @client.puts "Recent Topics:"
+      p "URL"
+      p url = `pwd`
+      url.gsub!(/\n/, '')
+      url = "#{url}/logs"
+      Dir.foreach(url) do |item|
+        next if item == '.' or item == '..'
+        @client.puts item.split('.')[0]
+      end
+    end
   end
 
   def exit_now

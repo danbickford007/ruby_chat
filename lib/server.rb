@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 require "socket"
 require_relative "commands"
-
+require_relative "logger"
 
 class Server
 
@@ -44,8 +44,8 @@ class Server
   end
 
   def check_for_commands username, client, msg, category
-    commands = Commands.new msg, client, @categories, category
-    result = commands.check
+    @commands = Commands.new msg, client, @categories, category
+    result = @commands.check
     @categories = result[:categories]
     result[:category]
   end
@@ -55,6 +55,7 @@ class Server
       msg = client.gets.chomp
       category = check_for_commands username, client, msg, category
       @connections[:clients].each do |other_name, other_client|
+        Logger.log(@categories[category], "#{username}: #{msg}")
         if category == other_client[1] 
           other_client[0].puts "#{username.to_s}: #{msg}"
         end
