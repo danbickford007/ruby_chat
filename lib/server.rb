@@ -21,11 +21,18 @@ class Server
     loop {
       Thread.start(@server.accept) do | client |
         nick_name = client.gets.chomp.to_sym
-        @connections[:clients].each do |other_name, other_client|
-          if nick_name == other_name || client == other_client
-            client.puts "This username already exist"
-            Thread.kill self
+        if nick_name.to_s.match(/session:/)
+          client.puts "Welcome back #{nick_name.to_s.split(/session:/)[1]}, press enter to continue..."
+          client.puts "session:#{nick_name.to_s.split(/session:/)[1]}"
+          nick_name = nick_name.to_s.split(/session:/)[1]
+        else
+          @connections[:clients].each do |other_name, other_client|
+            if nick_name == other_name || client == other_client
+              client.puts "This username already exist"
+              Thread.kill self
+            end
           end
+          client.puts "session:#{nick_name.to_s}"
         end
         puts "#{nick_name} #{client}"
         client.puts "Connection established, Thank you."
@@ -56,6 +63,7 @@ class Server
       category = check_for_commands username, client, msg, category
       @connections[:clients].each do |other_name, other_client|
         if category == other_client[1] 
+          p "sending to other....#{username}"
           other_client[0].puts "#{username.to_s}: #{msg}"
         end
         if other_name == username

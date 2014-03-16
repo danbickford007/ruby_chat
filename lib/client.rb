@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby -w
 require "socket"
 require 'colorize'
+require 'session'
 class Client
 
   @category = nil
@@ -19,13 +20,22 @@ class Client
     @response = Thread.new do
       loop {
         msg = @server.gets.chomp
-        puts "#{msg}".blue
+        if msg.match(/session:/)
+          Session.create(msg.split(/session:/)[1]) 
+        else
+          puts "#{msg}".blue
+        end
       }
     end
   end
  
   def send
-    puts "Enter the username:".red
+    if Session.current
+      puts "Logging in #{Session.current}"
+      @server.puts("session:#{Session.current}")
+    else
+      puts "Enter the username:".red
+    end
     @request = Thread.new do
       loop {
         msg = $stdin.gets.chomp
@@ -35,8 +45,8 @@ class Client
   end
 
   def self.start
-    #server = TCPSocket.open( "localhost", 3000 )
-    server = TCPSocket.open( "http://54.83.36.99", 3000 )
+    server = TCPSocket.open( "localhost", 3000 )
+    #server = TCPSocket.open( "54.83.36.99", 3000 )
     Client.new( server )
   end
 
