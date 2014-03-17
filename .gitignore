@@ -18,4 +18,5 @@ tmp
 *.swo
 *.swp
 logs/*
-session.txt
+.session.txt
+.passwords.txt

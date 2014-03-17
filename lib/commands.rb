@@ -91,6 +91,7 @@ class Commands
       @client.puts "To select a category, issue command 'category:test' with 'test being the name of your category'"
       @client.puts "To view all the categories and your current category defined by '*', issue command 'categories'"
       @client.puts "To exit, issue command 'exit'"
+      @client.puts "To keep your username, set a password by issuing 'password:1234'"
     end
     category
   end

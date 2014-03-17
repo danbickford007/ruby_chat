@@ -32,19 +32,14 @@ class Server
               client.puts "Please enter the password to access this account:"
               pass = client.gets.chomp
               if !Password.check(nick_name.to_s, pass.to_s)
-                Thread.kill self
+                client.puts 'disconnecting...'
+                client.puts 'exit:'
               end
             end
           end
           client.puts "session:#{nick_name.to_s}"
         end
-        puts "#{nick_name} #{client}"
-        client.puts "Connection established, Thank you."
-        client.puts "Please choose a category\n"
-        @categories.each_with_index do |cat, i|
-          client.puts "#{i}. #{cat}"
-        end
-        p "CATGEGORY...."
+        choose_category nick_name, client
         category = client.gets.chomp.to_i
         p category
         @connections[:clients][nick_name] = [client, category]
@@ -52,6 +47,15 @@ class Server
         listen_user_messages( nick_name, client, category)
       end
     }.join
+  end
+
+  def choose_category nick_name, client
+    puts "#{nick_name} #{client}"
+    client.puts "Connection established, Thank you."
+    client.puts "Please choose a category\n"
+    @categories.each_with_index do |cat, i|
+      client.puts "#{i}. #{cat}"
+    end
   end
 
   def check_for_commands username, client, msg, category
@@ -83,4 +87,4 @@ class Server
   end
 end
  
-Server.new( 3000, "localhost" )
+Server.new( 3000, "" )
