@@ -10,7 +10,7 @@ class Session
 
   def self.current
     begin
-      target = File.open("session.txt", 'r')
+      target = File.open(".session.txt", 'r')
       return target.read
       target.close
     rescue
@@ -19,7 +19,7 @@ class Session
   end
 
   def self.create name
-    target = File.open("session.txt", 'w+')
+    target = File.open(".session.txt", 'w+')
     target.write name
     target.close
   end

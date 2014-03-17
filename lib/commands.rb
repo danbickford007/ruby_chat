@@ -1,10 +1,11 @@
 class Commands
 
-  def initialize msg, client, categories, category
+  def initialize msg, client, categories, category, username
     @msg = msg
     @client = client
     @categories = categories
     @category = category
+    @username = username
   end
 
   def check
@@ -13,7 +14,14 @@ class Commands
     categories
     help
     history
+    password
     {categories: @categories, category: @category}
+  end
+
+  def password
+    if @msg.match(/password:/)
+      Password.set(@username, @msg.split(/password:/)[1]) 
+    end
   end
 
   def history

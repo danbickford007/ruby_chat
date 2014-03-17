@@ -2,7 +2,7 @@
 require "socket"
 require_relative "commands"
 require_relative "logger"
-
+require_relative "password"
 class Server
 
   def initialize( port, ip )
@@ -29,7 +29,11 @@ class Server
           @connections[:clients].each do |other_name, other_client|
             if nick_name == other_name || client == other_client
               client.puts "This username already exist"
-              Thread.kill self
+              client.puts "Please enter the password to access this account:"
+              pass = client.gets.chomp
+              if !Password.check(nick_name.to_s, pass.to_s)
+                Thread.kill self
+              end
             end
           end
           client.puts "session:#{nick_name.to_s}"
@@ -51,7 +55,7 @@ class Server
   end
 
   def check_for_commands username, client, msg, category
-    @commands = Commands.new msg, client, @categories, category
+    @commands = Commands.new msg, client, @categories, category, username
     result = @commands.check
     @categories = result[:categories]
     result[:category]
