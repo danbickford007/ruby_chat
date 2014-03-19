@@ -2,7 +2,7 @@ class Commands
 
   attr_accessor :used
 
-  def initialize msg, client, categories, category, username
+  def initialize msg=nil, client=nil, categories=nil, category=nil, username=nil
     @msg = msg
     @client = client
     @categories = categories
@@ -44,15 +44,8 @@ class Commands
       f.close
     elsif @msg.match(/history/)
       @used = true
-      @client.puts "Recent Topics:"
-      p "URL"
-      p url = `pwd`
-      url.gsub!(/\n/, '')
-      url = "#{url}/logs"
-      Dir.foreach(url) do |item|
-        next if item == '.' or item == '..'
-        @client.puts item.split('.')[0]
-      end
+      history = History.new(@client, @msg)
+      history.list
     end
   end
 
@@ -71,16 +64,24 @@ class Commands
       if @categories.include? cat
         hash = Hash[@categories.map.with_index.to_a]
         @category = hash[cat]
+        quick_print_history cat
       elsif cat.match(/\d/) and @categories[cat.to_i]
         p "HERE...."
         @category = cat.to_i
+        quick_print_history @categories[cat.to_i]
       else
         @categories << cat
         hash = Hash[@categories.map.with_index.to_a]
         @category = hash[cat]
       end
-      @client.puts "Changing category..."
     end
+  end
+
+  def quick_print_history cat
+    p url = `pwd`.gsub(/\n/, '')
+    url = "#{url}/logs/"
+    p file = "#{url}#{cat}.txt"
+    @client.puts `tail -n 15 #{file}`
   end
 
   def categories

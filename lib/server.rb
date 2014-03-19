@@ -3,6 +3,8 @@ require "socket"
 require_relative "commands"
 require_relative "logger"
 require_relative "password"
+require_relative "history"
+require_relative "category"
 class Server
 
   def initialize( port, ip )
@@ -13,7 +15,8 @@ class Server
     @connections[:server] = @server
     @connections[:rooms] = @rooms
     @connections[:clients] = @clients
-    @categories = ['Ruby', 'Rails']
+    @categories = ['Ruby', 'Rails'] 
+    @categories = @categories + Category.array
     run
   end
  
@@ -42,6 +45,8 @@ class Server
         choose_category nick_name, client
         category = client.gets.chomp.to_i
         p category
+        com = Commands.new(nil, client)
+        com.quick_print_history @categories[category]
         @connections[:clients][nick_name] = [client, category]
         client.puts "Starting chat..."
         listen_user_messages( nick_name, client, category)
