@@ -1,29 +1,23 @@
 # RubyChat
 
-TODO: Write a gem description
+RubyChat or rchat is a portal for ruby and rails developers to chat about different topics.  Whether it be problems with code, questions
+about programming or general discussions this is a perfect source.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'ruby_chat'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install ruby_chat
 
 ## Usage
 
-TODO: Write usage instructions here
+Via command line
+  Open chat
+    rchat
+  
+  Help
+    help
+  
+  Show All Categories
+    categories
+  Select Category
+    category:1
 
-## Contributing
-
-1. Fork it ( http://github.com/<my-github-username>/ruby_chat/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request

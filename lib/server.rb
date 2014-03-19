@@ -64,14 +64,12 @@ class Server
     @categories = result[:categories]
     result[:category]
   end
- 
-  def listen_user_messages( username, client, category )
-    loop {
-      msg = client.gets.chomp
-      category = check_for_commands username, client, msg, category
-      @connections[:clients].each do |other_name, other_client|
+
+  def send_to_clients username, category, msg
+    @connections[:clients].each do |other_name, other_client|
+      if @commands.used == false and msg != '' and msg != nil
         if category == other_client[1] 
-          p "sending to other....#{username}"
+          p "dispatching to....#{username}"
           if other_name == username
             other_client[0].puts "red:#{username.to_s}: #{msg}"
           else
@@ -83,6 +81,14 @@ class Server
           other_client[1] = category
         end
       end
+    end
+  end
+ 
+  def listen_user_messages( username, client, category )
+    loop {
+      msg = client.gets.chomp
+      category = check_for_commands username, client, msg, category
+      send_to_clients username, category, msg
     }
   end
 end

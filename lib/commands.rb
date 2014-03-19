@@ -1,11 +1,14 @@
 class Commands
 
+  attr_accessor :used
+
   def initialize msg, client, categories, category, username
     @msg = msg
     @client = client
     @categories = categories
     @category = category
     @username = username
+    @used = false
   end
 
   def check
@@ -20,12 +23,15 @@ class Commands
 
   def password
     if @msg.match(/password:/)
+      @used = true
       Password.set(@username, @msg.split(/password:/)[1]) 
+      @client.puts "yellow:password has been set."
     end
   end
 
   def history
     if @msg.match(/history:/)
+      @used = true
       @client.puts "Topic History:"
       p hist = @msg.split(/history:/)[1]
       url = `pwd`
@@ -37,6 +43,7 @@ class Commands
       end
       f.close
     elsif @msg.match(/history/)
+      @used = true
       @client.puts "Recent Topics:"
       p "URL"
       p url = `pwd`
@@ -51,12 +58,14 @@ class Commands
 
   def exit_now
     if @msg.match(/exit/)
+      @used = true
       @client.puts "exit:"
     end
   end
 
   def category
     if @msg.match(/category:/)
+      @used = true
       cat = @msg.split('category:')[1]
       cat.strip!
       if @categories.include? cat
@@ -76,6 +85,7 @@ class Commands
 
   def categories
     if @msg.match(/categories/)
+      @used = true
       @categories.each_with_index do |cat, i|
         @client.puts "#{i}. #{i == @category ? '*' : ''}#{cat}"
       end
@@ -84,13 +94,19 @@ class Commands
 
   def help
     if @msg.match(/help/)
-      @client.puts "Current Open Categories:"
+      @used = true
+      @client.puts "Current open categories to chat in:"
+      @client.puts "-----------------------------------"
       @categories.each_with_index do |cat, i|
         @client.puts "#{i}. #{cat}"
       end
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
       @client.puts "To select a category, issue command 'category:test' with 'test being the name of your category'"
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
       @client.puts "To view all the categories and your current category defined by '*', issue command 'categories'"
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
       @client.puts "To exit, issue command 'exit'"
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
       @client.puts "To keep your username, set a password by issuing 'password:1234'"
     end
     category
