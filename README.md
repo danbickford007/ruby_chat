@@ -10,14 +10,19 @@ about programming or general discussions this is a perfect source.
 ## Usage
 
 Via command line
-  Open chat
-    rchat
+    Open chat
+    
+    $ rchat
   
-  Help
-    help
+    Help
+    
+    $ help
   
-  Show All Categories
-    categories
-  Select Category
-    category:1
+    Show All Categories
+      
+    $ categories
+    
+    Select Category
+      
+    $ category:1
 
