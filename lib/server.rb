@@ -64,27 +64,33 @@ class Server
   end
 
   def check_for_commands username, client, msg, category
-    @commands = Commands.new msg, client, @categories, category, username
+    @commands = Commands.new msg, client, @categories, category, username, @connections[:clients]
     result = @commands.check
+    @connections[:clients] = @commands.clients
     @categories = result[:categories]
     result[:category]
   end
 
   def send_to_clients username, category, msg
     @connections[:clients].each do |other_name, other_client|
-      if @commands.used == false and msg != '' and msg != nil
-        if category == other_client[1] 
-          p "dispatching to....#{username}"
+      begin
+        if @commands.used == false and msg != '' and msg != nil
+          if category == other_client[1] 
+            p "dispatching to....#{username}"
+            if other_name == username
+              other_client[0].puts "red:#{username.to_s}: #{msg}"
+            else
+              other_client[0].puts "#{username.to_s}: #{msg}"
+            end
+          end
           if other_name == username
-            other_client[0].puts "red:#{username.to_s}: #{msg}"
-          else
-            other_client[0].puts "#{username.to_s}: #{msg}"
+            Logger.log(@categories[category], "#{username}: #{msg}")
+            other_client[1] = category
           end
         end
-        if other_name == username
-          Logger.log(@categories[category], "#{username}: #{msg}")
-          other_client[1] = category
-        end
+      rescue
+        p 'CLIENT DISCONNECTED - REMOVING SOCKET'
+        @connections[:clients].reject! { |key| key.to_s == other_name.to_s}
       end
     end
   end

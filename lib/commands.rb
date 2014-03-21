@@ -1,13 +1,14 @@
 class Commands
 
-  attr_accessor :used
+  attr_accessor :used, :clients
 
-  def initialize msg=nil, client=nil, categories=nil, category=nil, username=nil
+  def initialize msg=nil, client=nil, categories=nil, category=nil, username=nil, clients=nil
     @msg = msg
     @client = client
     @categories = categories
     @category = category
     @username = username
+    @clients = clients
     @used = false
   end
 
@@ -53,6 +54,7 @@ class Commands
     if @msg.match(/exit/)
       @used = true
       @client.puts "exit:"
+      @clients.reject! { |key| key.to_s == @username.to_s}
     end
   end
 
@@ -88,7 +90,9 @@ class Commands
     if @msg.match(/categories/)
       @used = true
       @categories.each_with_index do |cat, i|
-        @client.puts "#{i}. #{i == @category ? '*' : ''}#{cat}"
+        count = 0
+        @clients.each{|k,v| count += 1 if v[1] == i} 
+        @client.puts "#{i}. #{i == @category ? '*' : ''}#{cat} (#{count} active users)"
       end
     end
   end
@@ -109,6 +113,10 @@ class Commands
       @client.puts "To exit, issue command 'exit'"
       @client.puts "yellow:-----------------------------------------------------------------------------------------------"
       @client.puts "To keep your username, set a password by issuing 'password:1234'"
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
+      @client.puts "To view all available history for different topics, issue command 'history'"
+      @client.puts "yellow:-----------------------------------------------------------------------------------------------"
+      @client.puts "To view history for a specific subject, issue command 'history:myCategory' with myCategory being the history to view"
     end
     category
   end
