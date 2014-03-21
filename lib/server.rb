@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby -w
 require "socket"
 require_relative "commands"
+require_relative "user"
 require_relative "logger"
 require_relative "password"
 require_relative "history"
 require_relative "category"
+require_relative "session"
 class Server
 
   def initialize( port, ip )
@@ -29,22 +31,16 @@ class Server
           client.puts "session:#{nick_name.to_s.split(/session:/)[1]}"
           nick_name = nick_name.to_s.split(/session:/)[1]
         else
-          @connections[:clients].each do |other_name, other_client|
-            if nick_name == other_name || client == other_client
-              client.puts "This username already exist"
-              client.puts "Please enter the password to access this account:"
-              pass = client.gets.chomp
-              if !Password.check(nick_name.to_s, pass.to_s)
-                client.puts 'disconnecting...'
-                client.puts 'exit:'
-              end
-            end
+          user = User.new
+          users = user.find
+          if users[nick_name.to_s].to_s == nick_name.to_s
+            Session.prompt_password(nick_name, client)
           end
           client.puts "session:#{nick_name.to_s}"
         end
         choose_category nick_name, client
         category = client.gets.chomp.to_i
-        p category
+        create_user(nick_name)
         com = Commands.new(nil, client)
         com.quick_print_history @categories[category]
         @connections[:clients][nick_name] = [client, category]
@@ -52,6 +48,11 @@ class Server
         listen_user_messages( nick_name, client, category)
       end
     }.join
+  end
+
+  def create_user(nick_name)
+    user = User.new
+    user.create(nick_name)
   end
 
   def choose_category nick_name, client

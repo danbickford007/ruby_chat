@@ -3,5 +3,10 @@ $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 
 require_relative '../lib/client.rb'
 
-
-Client.start
+begin
+  Client.start
+rescue => e
+  puts "ERRROOOROROROROOR"
+  p e
+  p e.backtrace
+end
