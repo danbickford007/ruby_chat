@@ -2,9 +2,10 @@
 $LOAD_PATH << File.expand_path('../../lib', __FILE__)    
 
 require_relative '../lib/client.rb'
+require_relative '../lib/rclient.rb'
 
 begin
-  Client.start
+  Rclient.start
 rescue => e
   puts "ERRROOOROROROROOR"
   p e

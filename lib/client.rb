@@ -19,36 +19,12 @@ class Client
   def listen
     @response = Thread.new do
       loop {
-        msg = @server.gets.chomp
-        parse_out_commands msg
+        puts msg = @server.gets.chomp
       }
-    end
-  end
-
-  def parse_out_commands msg
-    if msg.match(/session:/)
-      temp = msg.split(/session:/)[1]
-      if !temp.match(/\:/)
-        Session.create(msg.split(/session:/)[1]) 
-      end
-    elsif msg.match(/yellow:/)
-      puts "#{msg.split(/yellow:/)[1]}".yellow
-    elsif msg.match(/exit:/)
-      abort('Thank you ...')
-    elsif msg.match(/red:/)
-      puts "#{msg.split(/red:/)[1]}".red
-    else
-      puts "#{msg}".blue
     end
   end
  
   def send
-    if Session.current
-      puts "Logging in #{Session.current}"
-      @server.puts("session:#{Session.current}")
-    else
-      puts "Enter the username:".red
-    end
     @request = Thread.new do
       loop {
         msg = $stdin.gets.chomp
